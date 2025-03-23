@@ -1,0 +1,82 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class FitnessTracker:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Personal Fitness Tracker")
+        self.root.geometry("400x400")
+
+        # User data
+        self.steps = 0
+        self.calories_burned = 0
+
+        # Labels
+        self.title_label = tk.Label(self.root, text="Fitness Tracker", font=("Arial", 20))
+        self.title_label.pack(pady=10)
+
+        self.steps_label = tk.Label(self.root, text=f"Steps: {self.steps}", font=("Arial", 14))
+        self.steps_label.pack(pady=10)
+
+        self.calories_label = tk.Label(self.root, text=f"Calories Burned: {self.calories_burned} kcal", font=("Arial", 14))
+        self.calories_label.pack(pady=10)
+
+        # Buttons
+        self.add_steps_button = tk.Button(self.root, text="Add Steps", command=self.add_steps, font=("Arial", 12))
+        self.add_steps_button.pack(pady=10)
+
+        self.add_calories_button = tk.Button(self.root, text="Add Calories Burned", command=self.add_calories, font=("Arial", 12))
+        self.add_calories_button.pack(pady=10)
+
+        self.reset_button = tk.Button(self.root, text="Reset Tracker", command=self.reset_tracker, font=("Arial", 12))
+        self.reset_button.pack(pady=10)
+
+    def add_steps(self):
+        try:
+            steps_to_add = int(self.prompt_input("Enter steps to add:"))
+            self.steps += steps_to_add
+            self.update_labels()
+        except ValueError:
+            messagebox.showerror("Invalid input", "Please enter a valid number.")
+
+    def add_calories(self):
+        try:
+            calories_to_add = float(self.prompt_input("Enter calories burned:"))
+            self.calories_burned += calories_to_add
+            self.update_labels()
+        except ValueError:
+            messagebox.showerror("Invalid input", "Please enter a valid number.")
+
+    def reset_tracker(self):
+        self.steps = 0
+        self.calories_burned = 0
+        self.update_labels()
+
+    def update_labels(self):
+        self.steps_label.config(text=f"Steps: {self.steps}")
+        self.calories_label.config(text=f"Calories Burned: {self.calories_burned} kcal")
+
+    def prompt_input(self, prompt_message):
+        prompt_window = tk.Toplevel(self.root)
+        prompt_window.title("Input")
+        tk.Label(prompt_window, text=prompt_message).pack(pady=10)
+        entry = tk.Entry(prompt_window)
+        entry.pack(pady=10)
+        entry.focus()
+
+        def on_submit():
+            result = entry.get()
+            prompt_window.destroy()
+            return result
+
+        submit_button = tk.Button(prompt_window, text="Submit", command=on_submit)
+        submit_button.pack(pady=10)
+
+        self.root.wait_window(prompt_window)
+        return entry.get()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = FitnessTracker(root)
+    root.mainloop()
